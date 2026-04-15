@@ -39,8 +39,25 @@ public class EventoRepository
     
     }
     
+    public Evento actualizarEvento(int id, Evento eventoActulizado)
+    {
+        Evento evento = buscarPorId(id);
 
-    public boolean actulizarEvento(int id, Evento eventoActulizado)
+        if (evento != null)
+        {
+            evento.setNombre(eventoActulizado.getNombre());
+            evento.setTipoEvento(eventoActulizado.getTipoEvento());
+            evento.setFechaRealizacion(evento.getFechaRealizacion());
+            evento.setUbicacion(eventoActulizado.getUbicacion());
+            evento.setCapacidad(eventoActulizado.getCapacidad());
+            evento.setEstado(eventoActulizado.getEstado());
+
+            return evento;
+        }
+        return null;
+    }
+
+    public boolean eliminarEvento(int id)
     {
         Evento evento = buscarPorId(id);
 
