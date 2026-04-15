@@ -1,4 +1,4 @@
-
+package com.castillo.antonella.controller;
 
 import java.util.List;
 
@@ -18,98 +18,81 @@ import com.castillo.antonella.service.EventoService;
 
 import jakarta.validation.Valid;
 
-public class EventoController 
-{
-    @RestController
-    @RequestMapping("api/v1/eventos")
+@RestController
+@RequestMapping("api/v1/eventos")
+public class EventoController {
 
-    public class EventoController
-    {
-        @Autowired
-        private EventoService eventoService;
+    @Autowired
+    private EventoService eventoService;
 
-        @PostMapping 
-        public ResponseEntity<String> postEvento(@valid @RequestBody Evento evento)
-        {
-            eventoService.create(evento);
-            return ResponseEntity.ok("Evento agregado correctamente");
+    @PostMapping
+    public ResponseEntity<String> postEvento(@Valid @RequestBody Evento evento) {
+        eventoService.create(evento);
+        return ResponseEntity.ok("Evento agregado correctamente");
 
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getEventos() {
+        List<Evento> lista = eventoService.readAll();
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(400).body("Recursos no encontrados");
         }
+        return ResponseEntity.ok(lista);
+    }
 
-        @GetMapping 
-        public ResponseEntity<?> getEventos()
-        {
-            List<Evento> lista = eventoService.readAll();
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEventoById(@PathVariable int id) {
+        Evento evento = eventoService.readById(id);
 
-            if(lista.isEmpty())
-                {
-                    return ResponseEntity.status(400).body("Recursos no encontrados");
-                }
-                return ResponseEntity.ok(lista);
-        }   
-
-
-        @GetMapping("/{id}")
-        public ResponseEntity<?> getEventoById(@PathVariable int id)
-        {   Evento evento = eventoService.readById(id);
-            
-            if (evento == null)
-            {
-                return ResponseEntity.status(400).body("Evento no encontrado");
-            }
-            return ResponseEntity.ok(evento);
-            
+        if (evento == null) {
+            return ResponseEntity.status(400).body("Evento no encontrado");
         }
-        
-        @PutMapping("/{id}")
+        return ResponseEntity.ok(evento);
 
-        public ReponseEntity<?> putEvento(@PathVariable int id, @Valid @RequestBody Evento evento)
-        {
-            Evento actualizado = eventoService.update(id, evento);
+    }
 
-            if (actualizado == null)
-            {
-                return ResponseEntity.status(404).body("Evento no encontrado");
-            }
-            return ResponseEntity.ok(actualizado);
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> putEvento(@PathVariable int id, @Valid @RequestBody Evento evento) {
+        Evento actualizado = eventoService.update(id, evento);
+
+        if (actualizado == null) {
+            return ResponseEntity.status(404).body("Evento no encontrado");
         }
+        return ResponseEntity.ok(actualizado);
+    }
 
-        @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
 
-        public ReponseEntity<?> deleteEvento(@PathVariable int id)
-        {
-            boolean eliminado = eventoService.delete(id);
+    public ResponseEntity<?> deleteEvento(@PathVariable int id) {
+        boolean eliminado = eventoService.delete(id);
 
-            if (!eliminado)
-            {
-                return ResponseEntity.status(404).body("Evento no encontrado");
-            }
-            return ResponseEntity.ok("Evento eliminado correctamente");
+        if (!eliminado) {
+            return ResponseEntity.status(404).body("Evento no encontrado");
         }
+        return ResponseEntity.ok("Evento eliminado correctamente");
+    }
 
-        @GetMapping("/tipo/{tipoEvento}")
-        public ResponseEntity<?> getEventosPorTipo(@PathVariable String tipoEvento)
-        {   List<Evento> lista = eventoService.readByTipo(tipoEvento);
-            
-            if (lista.isEmpty())
-            {
-                return ResponseEntity.status(400).body("No hay eventos de este tipo");
-            }
-            return ResponseEntity.ok(lita);
-            
+    @GetMapping("/tipo/{tipoEvento}")
+    public ResponseEntity<?> getEventosPorTipo(@PathVariable String tipoEvento) {
+        List<Evento> lista = eventoService.readByTipo(tipoEvento);
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(400).body("No hay eventos de este tipo");
         }
+        return ResponseEntity.ok(lista);
 
-        @GetMapping("/ordenar/fecha")
-        public ResponseEntity<?> getEventosOrdenadosPorFecha(@PathVariable int id)
-        {   List<Evento> lista = eventoService.orderByFecha();
-            
-            if (lista.isEmpty())
-            {
-                return ResponseEntity.status(400).body("No hay eventos registrados");
-            }
-            return ResponseEntity.ok(lista);
-            
+    }
+
+    @GetMapping("/ordenar/fecha")
+    public ResponseEntity<?> getEventosOrdenadosPorFecha(@PathVariable int id) {
+        List<Evento> lista = eventoService.orderByFecha();
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(400).body("No hay eventos registrados");
         }
-    }   
-
+        return ResponseEntity.ok(lista);
+    }
 }
